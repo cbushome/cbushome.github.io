@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="RF Back Office" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Realty Forward | Back Office</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #7ed957;
+      --green-dark: #5cb83a;
+      --grey: #a6a5a5;
+      --dark: #1a1a1a;
+      --darker: #111111;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #333333;
+      --text: #f0f0f0;
+      --text-muted: #a6a5a5;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-green: 0 8px 32px rgba(126,217,87,0.15);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: var(--darker);
+      font-family: 'Outfit', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--dark);
+      border-bottom: 2px solid var(--border);
+      padding: 0 32px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-wrap img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #111;
+    }
+    .logo-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .logo-name .word-realty { color: var(--green); }
+    .logo-name .word-forward { color: var(--text); }
+    .header-pill {
+      background: rgba(126,217,87,0.12);
+      border: 1px solid rgba(126,217,87,0.3);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    nav {
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+    .tab {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .section { margin-bottom: 48px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .grid { display: grid; gap: 16px; }
+    .g2 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(3, 1fr); }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--green);
+      box-shadow: var(--shadow-green);
+      transform: translateY(-2px);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.5;
+      flex: 1;
+    }
+    .card-link {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .card-featured {
+      background: linear-gradient(135deg, #1e2e1a, #1a2614);
+      border-color: rgba(126,217,87,0.35);
+    }
+    .card-featured .card-title { color: #fff; }
+
+    .alert {
+      background: rgba(126,217,87,0.08);
+      border: 1px solid rgba(126,217,87,0.25);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: #a8e880;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .welcome {
+      background: linear-gradient(135deg, #1e2e1a 0%, #1a1a1a 60%);
+      border: 1px solid rgba(126,217,87,0.2);
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .welcome h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .welcome h1 span { color: var(--green); }
+    .welcome p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-weight: 300;
+    }
+    .welcome-stats {
+      display: flex;
+      gap: 32px;
+      flex-shrink: 0;
+    }
+    .welcome-stat { text-align: center; }
+    .welcome-stat .num {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+    }
+    .welcome-stat .lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 900px) {
+      .g3, .g4 { grid-template-columns: repeat(2, 1fr); }
+      .welcome { flex-direction: column; text-align: center; }
+      .welcome-stats { justify-content: center; }
+    }
+    @media (max-width: 600px) {
+      .g2, .g3, .g4 { grid-template-columns: 1fr; }
+      header, nav { padding: 0 16px; }
+      main { padding: 24px 16px 60px; }
+      .welcome { padding: 28px 20px; }
+      .welcome h1 { font-size: 24px; }
+      .tab { padding: 12px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAFWAWUDASIAAhEBAxEB/8QAHAABAQEAAwEBAQAAAAAAAAAAAAgHBQYJBAID/8QAQxABAAECAwIHCwsEAgMBAAAAAAECAwQFBgcRCBIXITdVdRMUMVFhcZOUs9LTGCIyRlN0gYSxssMVQUKCYnIjNFKS/8QAGwEBAQEAAwEBAAAAAAAAAAAAAAYFAwQHAgH/xAAzEQEAAQICBgYLAQEBAAAAAAAAAQIDBAURITM0UXEGExVhgZESFBYiMUGhscHR8DIj4f/aAAwDAQACEQMRAD8AjIVx8nXQH22detU+4fJ10B9tnXrVPuMXt/Cd/kze1bHekcVx8nXQH22detU+4fJ10B9tnXrVPuHb+E7/ACO1bHekcVx8nXQH22detU+4fJ10B9tnXrVPuHb+E7/I7Vsd6RxXHyddAfbZ161T7h8nXQH22detU+4dv4Tv8jtWx3pHFcfJ10B9tnXrVPuHyddAfbZ161T7h2/hO/yO1bHekcVx8nXQH22detU+4fJ10B9tnXrVPuHb+E7/ACO1bHekcVx8nXQH22detU+4wzhAaLyfQussJlGS1YqrD3svoxNU4i5FdXHm5cpnniI5t1EOxhc1sYm51dGnS5rGOtXq/Qp+LOgGk7gAAO1aH2fas1ldj+h5VduYfjcWvF3f/HYo8fz58O7xRvnyKC2f8HrT2UTbxmp8TOd4uN09wpibeHpnzfSr/HdE/wB4dDF5lh8LqrnTPCPi6t/G2rH+p18E5aO0bqbV2L73yDKMRi4irdXeini2rf8A2rn5sebfv8Tf9AcHPK8FNGL1jjpzK94e9MNVVbsxPlr5qqvw4v4tzwGDwmAwlvB4HC2cLhrUcW3as0RRRTHiiI5of3TOLzy/e1W/dj6+f6Yt/M7tzVRqj6uiaq2SaD1BllvBXMiw+X1WqOJZxGBoizctx54jdV/tE+Fgmv8AYBqrI5uYrIKoz7A076uLbji4imPFNH+X+szM+KFbDq4XNcTh51VaY4TrcFjHXrPwnTHe86r9m7h79di/artXbdU010V0zTVTMeGJifBL8Lx1voLSusrHEz3KrV69EbqMTb+Zeo81cc+7yTvjyJ+1/wAHjP8AK5u4vSuKpzjCRzxh7m6jE0x4o/xr/DdPihTYTO8Pf1V+7Pf8PP8AbasZnauaqtU/3zYePozDBYzL8XcwePwt/CYm3O6u1etzRXTPlieeHztiJ064aPxAH6AAAAAAAAAAAAAAAAPRgB5eiQAAAAAAAAABKHDD6TMu7Gte2vKvShww+kzLuxrXtrzZyHe45S0cr3iOUsWGhaA2P601fxMRawP9Ny+rn77xsTbpqj/hTu41XniN3lhQugNh+jdMTaxWNsTnmYUc/dsXTHc6Z8dNrwR/txpjxqTF5th8NqmdM8IbF/H2bOrTpnhCbdA7L9Yazmm7leWzZwMzz43FTNuz+E7t9X+sSoXQGwPSmQTbxedzVn2Op3TuvU8XD0z5Lf8Al/tMx5Ia9ERERERERHgiBM4vOsRiNVM+jHd+2LfzG9d1RqjufixZtYezRYsWqLVq3TFNFFFMU00xHgiIjwQ/YMh0AAAAAAHBaw0fpvVuDjDagynD42KY3UXJji3Lf/WuN1UeaJ3SwHX/AAc8xwkXcZo3Hxj7Uc8YLFTFF2I8VNfNTV+PF/FTY7uFzDEYX/FWrh8nZsYu7Y/zOrg89M6ynM8lx9eAzbAYnA4qjw2r9uaKt3j3T4Y8r4noHqbTmRalwPeWfZXhsfY5+LF2jnonx01Rz0z5YmGDa/4ONdM3cZovMeNHhjAYyrdPmoufpFUeepTYTPrN33bvuz9GzYzS3Xqr1T9E6jk9RZBnWncfOBzzLMVl+I591N63NPGiP70z4Ko8sb4cY3KaoqjTE6YacTExpgAfr9AAAAAAAAAAAAejADy9EgAAAAAAAAADhcfpTTuYaks6ix+U4bFZnYs02LN69Tx+5001VVRxaZ5onfVPPu3+VzQ+qa6qf8zofsVTT8JAHy/AAAAAAAAAAAAAAHwZ9kuU59l9eX5zl2Gx+Fr8Nu/biqInxx4p8sc6HdquU4HI9omeZTllmbODw2Kqos25qmri07ondvnnnw/3Xihzbn0uak++z+kKLo7XV1tVOnVo/LXyiqesqjTq0OlAK5vgAAAAAAAAAAAPRgB5eiQAAAAAAAAAAAAAAAAAAAAAAAAAAABDm3Ppc1J99n9IXGhzbn0uak++z+kKDo7t6uX5hrZRtauTpQCwUAAAAAAAAAAAAD0YAeXokAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ5tz6XNSffZ/SFxoc259LmpPvs/pCg6O7erl+Ya2UbWrk6UAsFAAAAAAAAAAAAA9GAHl6JAAAAAAAAAAAAAAAAAAAAAAAAAAAAEObc+lzUn32f0hcaHNufS5qT77P6QoOju3q5fmGtlG1q5OlALBQAAAAAAAAAAAAPRgB5eiQAAAAAAAAAAAAAAAAAAHUNebSNI6MtVRm+aUVYuI+bgsPuuX6v9Y+j56piH3btV3avRojTL6ooqrnRTGmXbximluEZpbMsyu4XOcvxWTWZr3WMRVV3aiaf+cUxvpnzRVHlbDleY4DNcDbx2WYzD4zC3I30XrFyK6Kvxhy4jCXsPOi7Tofd3D3LP+40PqAddxAAAACHNufS5qT77P6QuNDm3Ppc1J99n9IUHR3b1cvzDWyja1cnSgFgoAAAAAAAAAAAAHowA8vRIAAAAAAAAAAAAAAE80b5Zvr/bRozSc3MLRi5zfMaN8d7YKYqimrxV3Po0+WOeY8Tls2Ll6r0bdOmX3btV3J0URpaQ6Jr7axo3R0XbGMzGMZmFHN3lhN1y5E+Kqfo0fjMT5JTZr/bTrPVcV4a3i4yfL6ubvfBVTTVVH/O59KrzRuifEzWeed8qLCdHpn3r8+Eftr2Mpn43Z8Iaxr/bvq/Uc14bKq4yDA1c3Ew1e+9VHlu7omP9Yp/FlNyuu5cquXKqq66pmaqqp3zMz4ZmX5FHYw9qxT6NunRDYtWaLUaKI0DmtKaq1DpbGxi8gzbE4G5v31U0Vb6K/wDtRPzavxiXCjkqoprj0ao0w+6qYqjRMKV0BwjsJfmjCa0y/vWvwd+4OmaqJ8tVvnqjz07/ADQ3TIc6ynPsvozDJsxw2PwtfguWLkVRE+KfFPknneezktPZ9nOnswpx+SZlicBiaf8AOzXMcaPFVHgqjyTvhhYvIbVz3rM+jP0/8Zd/Krdeu3qn6PQYThoDhHXKZowetcuiunmjv7BU7qvPXbmd0+emY/6t50vqXItT5fGOyHNMPj7HNxpt1fOonxVUzz0z5JiE1isBfws/9KdXH5Ma/hbtj/cOWAdN1xDm3Ppc1J99n9IXGhzbn0uak++z+kKDo7t6uX5hrZRtauTpQCwUAAAAAAAAAAAAD0YAeXokAAAAAAAAAABmO2fa7gtn2Js5Vbyy7mGa4jDxiKKZq4lmiiaqqYmqrnmZ30zzRH9vDDmsWLl+uKLcaZfdq1Xdq9GiNMtNuV0W7dVy5VTRRTEzVVVO6IiP7yynX+3bR+nJrw2WXJz/AB0f4YWuO40z/wArvPH/AOYqTdrvaTq/WdyunN80rpwdU74wWH327EeL5sfS89UzLp6lwnR+mPevzp7o/basZTEa7s6e6HfNf7WdZaxi5h8ZmHeWX1z/AOlg99u3MeKqfpV/jO7yQ6GChtWbdmn0bcaIa1Fum3GimNEADkfYAAAAAA+zJ80zHJ8fbx+VY7EYLFW/o3bFyaKo8m+P7eR8Y/JiJjRL8mInVLe9AcIzM8HNGE1jgIzGzHN33haaaL0eWqjmpq/Di/i3/R2sdN6uwffWQZtYxcRG+u1E8W7b/wC1E/Ojz7t0/wBkCv74DGYvAYu3jMDir2FxNqeNbu2a5orpnxxMc8MXF5FYva7fuz9PL9M6/llq5ro1T9Hoihzbn0uak++z+kO87P8AhDagyqaMJqrDRnOEjdHd7e63iKI/bX+O6fKzTabnOD1Dr3OM7y/uneuMxHdbXdKeLVETEeGPG4Mpy+9hMRV1katHx+XxcWAwlzD3Z9ONWh1wBRNcAAAAAAAAAAAB6MAPL0SAAAAAAAAAAJQ4YfSZl3Y1r215V6UOGH0mZd2Na9tebOQ73HKWjle8RyliwC3UoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0YAeXokAAAAAAAAAAShww+kzLuxrXtryr0ocMPpMy7sa17a82ch3uOUtHK94jlLFgFupQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHowA8vRIAAAAAAAAAAlDhh9JmXdjWvbXlXpQ4YfSZl3Y1r215s5DvccpaOV7xHKWLALdSgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPRgB5eiQAAAAAAAAABKHDD6TMu7Gte2vKvShww+kzLuxrXtrzZyHe45S0cr3iOUsWAW6lAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAejADy9EgAAAAAAAAACUOGH0mZd2Na9teVelDhh9JmXdjWvbXmzkO9xylo5XvEcpYsAt1KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9GAHl6JAAAAAAAAAAEocMPpMy7sa17a8q9KHDD6TMu7Gte2vNnId7jlLRyveI5SxYBbqUAAAAAAAAAAAAAABVWznYzoDOdB5Hm2YZVfuYvF4G1evVxi7lMVVVUxMzuid0OnjMdbwdMVXNOvg6+IxNGHiJr+aVRZXINs06nxPrt33jkG2adT4n1277zO9ocLwnyj9un2tY4T/eKNRZXINs06nxPrt33jkG2adT4n1277x7Q4XhPlH7O1rHCf7xRqLK5BtmnU+J9du+8cg2zTqfE+u3fePaHC8J8o/Z2tY4T/eKNRZXINs06nxPrt33jkG2adT4n1277x7Q4XhPlH7O1rHCf7xRqLK5BtmnU+J9du+8cg2zTqfE+u3fePaHC8J8o/Z2tY4T/AHijUWVyDbNOp8T67d945BtmnU+J9du+8e0OF4T5R+ztaxwn+8UajftuWzTSGlv6P/RsBdsd9d37rxsRXXv4vc93hnm+lI0bGOt37cXKYnRLuWsTRdpiqFNAPO0iAAAAAAAAAAJQ4YfSZl3Y1r215V6UOGH0mZd2Na9tebOQ73HKWjle8RyliwC3UoAAAAAAAAAAAAAAu3Y70V6Y7Ms/shCS7djvRXpjsyz+yE70j2NHP8MjONnTzdrASLAAAAAAAAAAAYtwnvq9+Z/iDhPfV78z/EK7K91p8fvLfwWwp8fu2kBIsAAAAAAAAAAAShww+kzLuxrXtryr0ocMPpMy7sa17a82ch3uOUtHK94jlLFgFupQAAAAAAAAAAAAABdux3or0x2ZZ/ZCEl27HeivTHZln9kJ3pHsaOf4ZGcbOnm7WAkWAAAAAAAAAAAxbhPfV78z/EHCe+r35n+IV2V7rT4/eW/gthT4/dtICRYAAAAAAAAAAAlDhh9JmXdjWvbXlXpQ4YfSZl3Y1r215s5DvccpaOV7xHKWLALdSgAAAAAAAAAAAAAC7djvRXpjsyz+yEJLt2O9FemOzLP7ITvSPY0c/wAMjONnTzdrASLAAAAAAAAAAAYtwnvq9+Z/iDhPfV78z/EK7K91p8fvLfwWwp8fu2kBIsAAAAAAAAAAAShww+kzLuxrXtryr0ocMPpMy7sa17a82ch3uOUtHK94jlLFgFupQAAAAAAAAAAAAABdux3or0x2ZZ/ZCEl27HeivTHZln9kJ3pHsaOf4ZGcbOnm7WAkWAAAAAAAAAAAxbhPfV78z/EHCe+r35n+IV2V7rT4/eW/gthT4/dtICRYAAAAAAAAAAAlDhh9JmXdjWvbXlXpQ4YfSZl3Y1r215s5DvccpaOV7xHKWLALdSgAAAAAAAAAAAAAC7djvRXpjsyz+yEJLt2O9FemOzLP7ITvSPY0c/wyM42dPN2sBIsAAAAAAAAAABi3Ce+r35n+IOE99XvzP8Qrsr3Wnx+8t/BbCnx+7aQEiwAAAAAAAAAABKHDD6TMu7Gte2vKvShww+kzLuxrXtrzZyHe45S0cr3iOUsWAW6lAAAAAAAAAAAAAAF27HeivTHZln9kISXbsd6K9MdmWf2Qnekexo5/hkZxs6ebtYCRYAAAAAAAAAADFuE99XvzP8QcJ76vfmf4hXZXutPj95b+C2FPj93N8t2lOr869Da+Ict2lOr869Da+IDI9VtcGf1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4HLdpTq/OvQ2viHLdpTq/OvQ2viAeq2uB1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4HLdpTq/OvQ2viHLdpTq/OvQ2viAeq2uB1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4HLdpTq/OvQ2viMB4Ruqcv1drfB5lltnFWrNvLaLExiKaaauNF27Vv+bMxu3VQDSyqxRRiNNMfKXcwNqmm7piGZgKdtgAAAAAAAAAAAAACqtnO13TeUaDyPK8Tgs2rvYXA2rVdVu1bmmZimIndvrid34Ax85t03LdMVR82fmNEVURp4uwct2lOr869Da+Ict2lOr869Da+ICe9VtcGR1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4HLdpTq/OvQ2viHLdpTq/OvQ2viAeq2uB1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4HLdpTq/OvQ2viHLdpTq/OvQ2viAeq2uB1FHA5btKdX516G18Q5btKdX516G18QD1W1wOoo4Mz25bRck1L/R+8MLmFvvbu/H7tbojfxu57t26qf/mQFBgbdNNimIjj92thqIi1EQ//2Q==" alt="Realty Forward Logo" />
+    <div class="logo-name"><span class="word-realty">Realty</span> <span class="word-forward">Forward</span></div>
+  </div>
+  <div class="header-pill">Back Office</div>
+</header>
+
+<nav>
+  <div class="tab active" onclick="switchTab('home')">Home</div>
+  <div class="tab" onclick="switchTab('forms')">TC Forms</div>
+  <div class="tab" onclick="switchTab('tools')">Tools</div>
+  <div class="tab" onclick="switchTab('marketing')">Marketing</div>
+  <div class="tab" onclick="switchTab('vendors')">Vendors</div>
+  <div class="tab" onclick="switchTab('pm')">Property Mgmt</div>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <div class="panel active" id="panel-home">
+    <div class="welcome">
+      <div>
+        <h1>Welcome to your<br><span>Back Office Hub</span></h1>
+        <p>Everything you need to run your business — forms, tools, vendors, and more.</p>
+      </div>
+      <div class="welcome-stats">
+        <div class="welcome-stat">
+          <div class="num">6</div>
+          <div class="lbl">TC Forms</div>
+        </div>
+        <div class="welcome-stat">
+          <div class="num">8</div>
+          <div class="lbl">Daily Tools</div>
+        </div>
+        <div class="welcome-stat">
+          <div class="num">5</div>
+          <div class="lbl">Vendors</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Quick Access</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g4">
+        <a href="https://forms.gle/icEEXy6beh3BbvWD9" target="_blank" class="card card-featured">
+          <div class="card-title">In-Contract 2 Close</div>
+          <div class="card-desc">TC form for transactions already under contract</div>
+          <div class="card-link">Open Form</div>
+        </a>
+        <a href="https://forms.gle/TsSvU2KMC6dbAyXx9" target="_blank" class="card card-featured">
+          <div class="card-title">Listing 2 Close</div>
+          <div class="card-desc">TC form for listings needing full support</div>
+          <div class="card-link">Open Form</div>
+        </a>
+        <a href="https://app.skyslope.com/" target="_blank" class="card">
+          <div class="card-title">SkySlope</div>
+          <div class="card-desc">Transaction management and compliance</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="http://www.lofty.com" target="_blank" class="card">
+          <div class="card-title">Lofty CRM</div>
+          <div class="card-desc">Client relationship manager</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">All Sections</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g3">
+        <div class="card" onclick="switchTab('forms')">
+          <div class="card-title">TC Forms</div>
+          <div class="card-desc">All TC submission forms including self-managed and referrals</div>
+          <div class="card-link">Go to Forms</div>
+        </div>
+        <div class="card" onclick="switchTab('tools')">
+          <div class="card-title">Daily Tools</div>
+          <div class="card-desc">SkySlope, Lofty, Gmail, Drive, MLS, Academy and more</div>
+          <div class="card-link">Go to Tools</div>
+        </div>
+        <div class="card" onclick="switchTab('marketing')">
+          <div class="card-title">Marketing</div>
+          <div class="card-desc">Canva templates, brand kit, logos and Drive folders</div>
+          <div class="card-link">Go to Marketing</div>
+        </div>
+        <div class="card" onclick="switchTab('vendors')">
+          <div class="card-title">Vendors</div>
+          <div class="card-desc">Title, photography, and inspection company partners</div>
+          <div class="card-link">Go to Vendors</div>
+        </div>
+        <div class="card" onclick="switchTab('pm')">
+          <div class="card-title">Property Management</div>
+          <div class="card-desc">Tenant Turner, Avail Rentals, and Buildium</div>
+          <div class="card-link">Go to PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMS -->
+  <div class="panel" id="panel-forms">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">TC Managed Forms</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g2">
+        <a href="https://forms.gle/icEEXy6beh3BbvWD9" target="_blank" class="card card-featured">
+          <div class="card-title">In-Contract 2 Close TC Form</div>
+          <div class="card-desc">Already under contract and need full TC support through closing? Submit here.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+        <a href="https://forms.gle/TsSvU2KMC6dbAyXx9" target="_blank" class="card card-featured">
+          <div class="card-title">Listing 2 Close TC Form</div>
+          <div class="card-desc">Need TC support from listing all the way through closing? Submit here.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Self-Managed Forms</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g3">
+        <a href="https://forms.gle/7mG4qvDe3BpGmZKt7" target="_blank" class="card">
+          <div class="card-title">Self-Managed In-Contract</div>
+          <div class="card-desc">Managing your own buyer transaction? Submit here for compliance tracking.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+        <a href="https://forms.gle/8jK4yjf8VquvDnmb9" target="_blank" class="card">
+          <div class="card-title">Self-Managed Listing</div>
+          <div class="card-desc">Managing your own listing? Submit here for compliance and back-office tracking.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+        <a href="https://forms.gle/wqCKQhttKV1srjCTA" target="_blank" class="card">
+          <div class="card-title">Self-Managed Rental</div>
+          <div class="card-desc">Managing a rental on your own? Submit here for tracking.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Referral Commission</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g2">
+        <a href="https://forms.gle/NyRvtNuGLPzACV8u5" target="_blank" class="card">
+          <div class="card-title">Originating Referral Commission</div>
+          <div class="card-desc">Submit a referral commission request for a deal you originated and passed to another agent.</div>
+          <div class="card-link">Open Form</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="panel" id="panel-tools">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Daily Tools</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g4">
+        <a href="https://skyslope.com/forms-login/" target="_blank" class="card">
+          <div class="card-title">SkySlope Forms</div>
+          <div class="card-desc">Contracts and document signatures</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://app.skyslope.com/" target="_blank" class="card">
+          <div class="card-title">SkySlope Compliance</div>
+          <div class="card-desc">Transaction management and compliance</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="http://www.lofty.com" target="_blank" class="card">
+          <div class="card-title">Lofty CRM</div>
+          <div class="card-desc">Client relationship manager</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://drive.google.com/drive/my-drive" target="_blank" class="card">
+          <div class="card-title">Google Drive</div>
+          <div class="card-desc">Your cloud file storage</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://mail.google.com/mail/" target="_blank" class="card">
+          <div class="card-title">Gmail</div>
+          <div class="card-desc">Your Realty Forward email</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://portal.columbusrealtors.com/home" target="_blank" class="card">
+          <div class="card-title">CBAOR Portal</div>
+          <div class="card-desc">Columbus Board of Realtors portal</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://mlsnow.com/" target="_blank" class="card">
+          <div class="card-title">MLS Now</div>
+          <div class="card-desc">Cleveland to WV MLS listings</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="http://training.realty-forward.com" target="_blank" class="card">
+          <div class="card-title">RF Academy</div>
+          <div class="card-desc">Training and education portal</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">CE Classes</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g2">
+        <a href="https://realtyforward.theceshop.com/real-estate/" target="_blank" class="card card-featured">
+          <div class="card-title">The CE Shop</div>
+          <div class="card-desc">Continuing education classes through Realty Forward</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKETING -->
+  <div class="panel" id="panel-marketing">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Marketing and Branding</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g3">
+        <a href="https://www.canva.com/brand/brand-templates/EAGpP9KyxYc" target="_blank" class="card">
+          <div class="card-title">Buyer Road Map</div>
+          <div class="card-desc">Canva buyer road map template for client presentations</div>
+          <div class="card-link">Open in Canva</div>
+        </a>
+        <a href="https://www.canva.com/design/DAF5OrwnIKk/Zv-W8MQkDGvFR5LcxIyiBQ/edit" target="_blank" class="card">
+          <div class="card-title">Listing Presentation</div>
+          <div class="card-desc">Canva listing presentation template for seller meetings</div>
+          <div class="card-link">Open in Canva</div>
+        </a>
+        <a href="https://www.canva.com/brand/kAFpduoLu2Q" target="_blank" class="card">
+          <div class="card-title">Brand Kit</div>
+          <div class="card-desc">Realty Forward colors, fonts, and brand assets in Canva</div>
+          <div class="card-link">Open in Canva</div>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1YbHD36-jqtnaL5Xfvi4jGIIzNqrdyu3A" target="_blank" class="card">
+          <div class="card-title">So You Know!</div>
+          <div class="card-desc">Important info and resources folder in Drive</div>
+          <div class="card-link">Open in Drive</div>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1Wey8nAcTJa9s9BpCSXkORZ7VLzsDVEgD" target="_blank" class="card">
+          <div class="card-title">RF 2.0 Logos and Assets</div>
+          <div class="card-desc">Realty Forward 2.0 logo files and brand graphics</div>
+          <div class="card-link">Open in Drive</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENDORS -->
+  <div class="panel" id="panel-vendors">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Preferred Vendors</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g2">
+        <a href="https://www.titleconnectagency.com/" target="_blank" class="card">
+          <div class="card-title">Title Connect</div>
+          <div class="card-desc">Preferred title and settlement agency</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://www.fairytalefilmsohio.com/" target="_blank" class="card">
+          <div class="card-title">Fairytale Films</div>
+          <div class="card-desc">Preferred real estate photography and video</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://shop.customsigncenter.com/real-estate-signs-frames-riders-11/custom-real-estate-signs/custom-real-estate-panels/s363/realty-forward/designs/?_gl=1*1bl2dcy*_gcl_au*MjA4ODkzODY0My4xNzc5Njc1MDk1*_ga*MTYyMDE0MTE2My4xNzc5Njc1MDk1*_ga_3T0HTY7ZL2*czE3Nzk2NzUwOTUkbzEkZzEkdDE3Nzk2NzUxMTckajM4JGwwJGgw#collapsecat363" target="_blank" class="card">
+          <div class="card-title">Custom Sign Center</div>
+          <div class="card-desc">Realty Forward branded yard signs, frames, and riders</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Inspection Companies</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="alert">Always provide at least 3 inspection options to all clients</div>
+      <div class="grid g3">
+        <a href="https://www.capcityinspect.com/" target="_blank" class="card">
+          <div class="card-title">Cap City Inspections</div>
+          <div class="card-desc">Columbus area home inspection company</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="http://www.prosafeinspections.com" target="_blank" class="card">
+          <div class="card-title">ProSafe Inspections</div>
+          <div class="card-desc">Professional home inspection services</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://www.linkhorninspections.com/" target="_blank" class="card">
+          <div class="card-title">LinkHorn Inspection Group</div>
+          <div class="card-desc">Thorough home inspection services</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PM -->
+  <div class="panel" id="panel-pm">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Property Management</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="grid g2">
+        <a href="https://tenantturner.com/" target="_blank" class="card">
+          <div class="card-title">Tenant Turner / Avail Rentals</div>
+          <div class="card-desc">Tenant screening, showing scheduling, and rental management</div>
+          <div class="card-link">Open</div>
+        </a>
+        <a href="https://www.buildium.com/" target="_blank" class="card">
+          <div class="card-title">Buildium</div>
+          <div class="card-desc">Full property management platform for rent collection and maintenance</div>
+          <div class="card-link">Open</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const tabs = ['home','forms','tools','marketing','vendors','pm'];
+    const idx = tabs.indexOf(name);
+    document.querySelectorAll('.tab')[idx].classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js');
+    });
+  }
+</script>
+
+</body>
+</html>
