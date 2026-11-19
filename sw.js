@@ -1,5 +1,5 @@
 // Bump VERSION whenever you want installed copies to drop their old cache.
-const VERSION = 'rf-backoffice-v3';
+const VERSION = 'rf-backoffice-v4';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
