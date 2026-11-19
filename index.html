@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#18181a" />
+  <meta name="theme-color" content="#3a3a3f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="RF Back Office" />
@@ -70,6 +70,7 @@
       transition: border-color .2s, background .2s;
     }
     .search input::placeholder { color: var(--dim); }
+    .search input::-webkit-search-cancel-button { filter: grayscale(1) brightness(1.6); cursor: pointer; }
     .search input:focus { border-color: var(--green); background: var(--surface-2); }
     .search kbd {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -229,6 +230,41 @@
     .card:hover { border-color: rgba(127,216,86,.35); box-shadow: 0 10px 30px -14px rgba(127,216,86,.35); }
     .card.feat { border-color: rgba(127,216,86,.18); background: linear-gradient(140deg, #22301b 0%, var(--surface) 75%); }
     .cta.ghost { border-color: transparent; background: var(--surface-2); }
+    /* ---------- Lighter slate for the header and top section ---------- */
+    :root {
+      --black: #3a3a3f; --surface: #45454b; --surface-2: #4d4d54;
+      --line: #4f4f56; --line-2: #5a5a62; --text: #f6f5f2; --muted: #d0cec9; --dim: #a3a19c;
+    }
+    .topbar { background: rgba(58,58,63,.97); }
+    .hero::before {
+      background:
+        radial-gradient(45% 110% at 88% 10%, rgba(127,216,86,.2), transparent 65%),
+        radial-gradient(35% 90% at 60% 120%, rgba(180,230,160,.10), transparent 70%);
+    }
+    .hero-mark { opacity: .1; }
+    .cta.ghost { background: #4a4a51; }
+    .cta.ghost:hover { background: #52525a; }
+    /* ---------- Split: charcoal top, off-white content ---------- */
+    body { background: #f3f2ee; }
+    .hero { background: var(--black); }
+    .tabs-bar, main, footer {
+      --surface: #ffffff; --surface-2: #fbfbf8;
+      --line: #e6e4de; --line-2: #dbd8d0; --text: #1d1d1f; --muted: #66645f; --dim: #9b9993;
+      --green-deep: #3f8a1f;
+      color: var(--text);
+    }
+    .tabs-bar { background: rgba(243,242,238,.94); }
+    .tab .n { background: #e8e6e0; }
+    .tab[aria-selected="true"] .n { color: var(--green-ink); }
+    .card { border-color: var(--line); box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+    .card:hover { background: #fff; border-color: rgba(127,216,86,.7); box-shadow: 0 12px 28px -16px rgba(0,0,0,.18); }
+    .card.feat { background: linear-gradient(140deg, #eef8e8 0%, #fff 70%); border-color: rgba(127,216,86,.45); }
+    .tile { background: rgba(127,216,86,.18); color: var(--green-deep); }
+    .card:hover .go { color: var(--green-deep); }
+    .note { color: var(--green-deep); background: rgba(127,216,86,.12); border-color: rgba(127,216,86,.35); }
+    main mark { background: rgba(127,216,86,.35); color: var(--text); }
+    .panel-h .dot { color: var(--green-deep); }
+    footer { background: #f3f2ee; }
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; gap: 20px; }
     }
