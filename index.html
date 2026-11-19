@@ -114,7 +114,33 @@
       position: absolute; right: -40px; bottom: -70px; width: 460px; height: auto;
       opacity: .07; pointer-events: none;
     }
-    .hero-inner { position: relative; padding-top: 64px; padding-bottom: 56px; }
+    .hero-inner { position: relative; z-index: 2; padding-top: 64px; padding-bottom: 56px; }
+    .hero-mark { z-index: 1; }
+    /* Photo slideshow (only shows when HERO_PHOTOS has entries) */
+    .hero-photos { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .hero-photos img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transform: scale(1.06); transition: opacity 1.6s ease;
+    }
+    .hero-photos img.show { opacity: 1; animation: drift 14s linear forwards; }
+    @keyframes drift { from { transform: scale(1.06); } to { transform: scale(1.16) translateX(-2%); } }
+    .hero.has-photos .hero-photos::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(90deg, rgba(10,10,10,.96) 0%, rgba(10,10,10,.82) 42%, rgba(10,10,10,.35) 100%),
+        linear-gradient(0deg, rgba(10,10,10,.9) 0%, transparent 45%);
+    }
+    .hero.has-photos .hero-mark { display: none; }
+    .photo-credit { position: absolute; right: 16px; bottom: 10px; z-index: 2; font-size: 11px; color: rgba(255,255,255,.45); }
+    .photo-credit a:hover { color: var(--green); }
+
+    /* Entrance and scroll motion */
+    .rise { opacity: 0; transform: translateY(18px); animation: rise .8s var(--ease) forwards; }
+    .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+    .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s var(--ease); }
+    .js .reveal.in { opacity: 1; transform: none; }
+    .eyebrow .when { color: var(--muted); font-weight: 500; letter-spacing: .12em; }
     .eyebrow {
       display: inline-flex; align-items: center; gap: 10px;
       font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--green);
@@ -223,6 +249,7 @@
       .search kbd { display: none; }
       .hero-inner { padding-top: 40px; padding-bottom: 36px; }
       .hero-mark { width: 280px; right: -60px; bottom: -40px; }
+      .hero.has-photos .hero-photos::after { background: linear-gradient(0deg, rgba(10,10,10,.97) 0%, rgba(10,10,10,.82) 55%, rgba(10,10,10,.55) 100%); }
       .start { grid-template-columns: 1fr; margin-top: 28px; }
       .cta-t { font-size: 20px; }
       .sec { padding-top: 36px; }
@@ -232,6 +259,8 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
+      .rise, .js .reveal { opacity: 1 !important; transform: none !important; animation: none !important; }
+      .hero-photos img.show { animation: none; }
       * { transition: none !important; }
     }
   </style>
@@ -265,13 +294,14 @@
 </header>
 
 <section class="hero" id="top">
+  <div class="hero-photos" id="heroPhotos" aria-hidden="true"></div>
   <svg class="hero-mark" viewBox="0 0 357 342" aria-hidden="true"><use href="#rf-mark"/></svg>
   <div class="wrap hero-inner">
-    <div class="eyebrow">Agent Back Office</div>
-    <h1>Move it forward<span class="dot">.</span></h1>
-    <p class="lede">Every form, tool, and partner you need to list, sell, and close with Realty Forward, in one place.</p>
+    <div class="eyebrow rise"><span id="greet">Agent Back Office</span><span class="when" id="when"></span></div>
+    <h1 class="rise d1">Move it forward<span class="dot">.</span></h1>
+    <p class="lede rise d2">Every form, tool, and partner you need to list, sell, and close with Realty Forward, in one place.</p>
 
-    <div class="start">
+    <div class="start rise d3">
       <a class="cta" href="https://forms.gle/icEEXy6beh3BbvWD9" target="_blank" rel="noopener">
         <span class="cta-k">TC handles it</span>
         <span class="cta-t">Transaction Coordinator Assisted File</span>
@@ -310,6 +340,16 @@
   a card stand out. Counts update automatically.
   ============================================================
 */
+/*
+  HERO PHOTOS
+  Add photos here and the top of the page becomes a slow slideshow.
+  Use free-license photos (Unsplash License) or photos you own.
+  Example:
+  { src: 'https://images.unsplash.com/photo-XXXX?w=1800&q=70&auto=format&fit=crop', credit: 'Jane Doe', link: 'https://unsplash.com/photos/XXXX' },
+*/
+const HERO_PHOTOS = [
+];
+
 const SECTIONS = [
   { id: 'forms', name: 'TC Forms', groups: [
     { name: 'Transaction files', items: [
@@ -451,6 +491,57 @@ document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
 });
 chips.forEach(c => c.addEventListener('click', () => { if (q.value) { q.value = ''; runSearch(); } }));
+
+/* Greeting with today's date */
+(() => {
+  const now = new Date(), h = now.getHours();
+  $('#greet').textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  $('#when').textContent = ' · ' + now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+})();
+
+/* Hero slideshow */
+(() => {
+  const box = $('#heroPhotos');
+  const list = HERO_PHOTOS.filter(p => p && p.src);
+  if (!list.length) return;
+  box.closest('.hero').classList.add('has-photos');
+  const imgs = list.map((p, i) => {
+    const img = new Image();
+    img.alt = ''; img.decoding = 'async';
+    if (i > 0) img.loading = 'lazy';
+    img.src = p.src; box.appendChild(img); return img;
+  });
+  const credit = document.createElement('div');
+  credit.className = 'photo-credit'; box.closest('.hero').appendChild(credit);
+  let i = 0;
+  const show = n => {
+    imgs.forEach((im, k) => im.classList.toggle('show', k === n));
+    const p = list[n];
+    credit.innerHTML = p.credit ? 'Photo: ' + (p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.credit)}</a>` : esc(p.credit)) : '';
+  };
+  imgs[0].addEventListener('load', () => show(0), { once: true });
+  if (imgs[0].complete) show(0);
+  if (imgs.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(() => { if (!document.hidden) { i = (i + 1) % imgs.length; show(i); } }, 7000);
+  }
+})();
+
+/* Cards ease in as you scroll */
+(() => {
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target; el.classList.add('in'); io.unobserve(el);
+    setTimeout(() => { el.classList.remove('reveal', 'in'); el.style.transitionDelay = ''; }, 1100);
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.sec-head, .group-t, .note, .card').forEach(el => {
+    const sibs = el.parentElement.children, idx = [...sibs].indexOf(el);
+    el.classList.add('reveal'); el.style.transitionDelay = Math.min(idx, 6) * 60 + 'ms';
+    io.observe(el);
+  });
+  q.addEventListener('input', () => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')));
+})();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }));
