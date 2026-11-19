@@ -153,15 +153,6 @@
     .cta.ghost .cta-d { color: var(--muted); opacity: 1; }
     .cta.ghost .arrow { background: rgba(126,217,87,.12); }
 
-    .self {
-      margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
-      font-size: 14px; color: var(--muted);
-    }
-    .self a {
-      color: var(--text); font-weight: 500; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-2);
-      transition: border-color .2s, color .2s;
-    }
-    .self a:hover { border-color: var(--green); color: var(--green); }
 
     /* ---------- Sections ---------- */
     main { padding: 24px 0 96px; }
@@ -282,23 +273,17 @@
 
     <div class="start">
       <a class="cta" href="https://forms.gle/icEEXy6beh3BbvWD9" target="_blank" rel="noopener">
-        <span class="cta-k">TC support</span>
-        <span class="cta-t">In-Contract 2 Close</span>
-        <span class="cta-d">Already under contract? We'll take it to closing.</span>
+        <span class="cta-k">TC handles it</span>
+        <span class="cta-t">Transaction Coordinator Assisted File</span>
+        <span class="cta-d">Our TC takes your file through closing.</span>
         <span class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="cta ghost" href="https://forms.gle/TsSvU2KMC6dbAyXx9" target="_blank" rel="noopener">
-        <span class="cta-k">TC support</span>
-        <span class="cta-t">Listing 2 Close</span>
-        <span class="cta-d">Full support from listing all the way to closing.</span>
+      <a class="cta ghost" href="https://forms.gle/7mG4qvDe3BpGmZKt7" target="_blank" rel="noopener">
+        <span class="cta-k">You handle it</span>
+        <span class="cta-t">Self Managed Transaction File</span>
+        <span class="cta-d">Running it yourself. Submit for compliance tracking.</span>
         <span class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-    </div>
-    <div class="self">
-      <span>Managing it yourself?</span>
-      <a href="https://forms.gle/7mG4qvDe3BpGmZKt7" target="_blank" rel="noopener">In-Contract</a>
-      <a href="https://forms.gle/8jK4yjf8VquvDnmb9" target="_blank" rel="noopener">Listing</a>
-      <a href="https://forms.gle/wqCKQhttKV1srjCTA" target="_blank" rel="noopener">Rental</a>
     </div>
   </div>
 </section>
@@ -327,14 +312,9 @@
 */
 const SECTIONS = [
   { id: 'forms', name: 'TC Forms', groups: [
-    { name: 'TC Managed', items: [
-      { title: 'In-Contract 2 Close', desc: 'Already under contract and need full TC support through closing.', url: 'https://forms.gle/icEEXy6beh3BbvWD9', feat: true, tags: 'transaction coordinator buyer under contract' },
-      { title: 'Listing 2 Close', desc: 'TC support from listing all the way through closing.', url: 'https://forms.gle/TsSvU2KMC6dbAyXx9', feat: true, tags: 'transaction coordinator seller listing' },
-    ]},
-    { name: 'Self-Managed', items: [
-      { title: 'Self-Managed In-Contract', desc: 'Running your own buyer transaction. Submit for compliance tracking.', url: 'https://forms.gle/7mG4qvDe3BpGmZKt7', tags: 'buyer compliance' },
-      { title: 'Self-Managed Listing', desc: 'Running your own listing. Submit for compliance and back-office tracking.', url: 'https://forms.gle/8jK4yjf8VquvDnmb9', tags: 'seller compliance' },
-      { title: 'Self-Managed Rental', desc: 'Handling a rental on your own. Submit for tracking.', url: 'https://forms.gle/wqCKQhttKV1srjCTA', tags: 'lease tenant' },
+    { name: 'Transaction files', items: [
+      { title: 'Transaction Coordinator Assisted File', desc: 'Our transaction coordinator takes your file through closing.', url: 'https://forms.gle/icEEXy6beh3BbvWD9', feat: true, tags: 'tc tca assisted in-contract under contract buyer seller listing' },
+      { title: 'Self Managed Transaction File', desc: 'Running the file yourself. Submit for compliance and back-office tracking.', url: 'https://forms.gle/7mG4qvDe3BpGmZKt7', feat: true, tags: 'self-managed compliance in-contract buyer seller listing' },
     ]},
     { name: 'Referrals', items: [
       { title: 'Originating Referral Commission', desc: 'Request commission on a deal you originated and passed to another agent.', url: 'https://forms.gle/NyRvtNuGLPzACV8u5', tags: 'referral fee commission' },
